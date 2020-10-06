@@ -1,7 +1,7 @@
 import { th, tr, td, table, tbody, a, b, span, fragment } from "./html"
 
-// Tabulate the lcov data in a HTML table.
-export function tabulate(lcov, options) {
+// Tabulate the clover data in a HTML table.
+export function tabulate(clover, options) {
 	const head = tr(
 		th("File"),
 		th("Branches"),
@@ -11,7 +11,7 @@ export function tabulate(lcov, options) {
 	)
 
 	const folders = {}
-	for (const file of lcov) {
+	for (const file of clover) {
 		const parts = file.file.replace(options.prefix, "").split("/")
 		const folder = parts.slice(0, -1).join("/")
 		folders[folder] = folders[folder] || []

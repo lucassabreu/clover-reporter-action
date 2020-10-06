@@ -1,10 +1,10 @@
 {
-	"name": "lcov-reporter-action",
+	"name": "clover-reporter-action",
 	"version": "0.2.17",
-	"description": "Comments a pull request with the lcov code coverage",
+	"description": "Comments a pull request with the clover code coverage",
 	"license": "MIT",
-	"author": "Romeo Van Snick",
-	"repository": "https://github.com/romeovs/lcov-reporter-action",
+	"author": "Dan Hunsaker",
+	"repository": "https://github.com/danhunsaker/clover-reporter-action",
 	"keywords": [
 		"actions",
 		"pull-request",
@@ -21,7 +21,7 @@
 	"dependencies": {
 		"@actions/core": "^1.2.0",
 		"@actions/github": "^1.1.0",
-		"lcov-parse": "^1.0.0"
+		"@technote-space/clover-json": "^0.4.31"
 	},
 	"devDependencies": {
 		"@babel/core": "^7.8.6",

@@ -2,7 +2,7 @@ import process from "process"
 import { promises as fs } from "fs"
 import path from "path"
 
-import { parse } from "./lcov"
+import { parse } from "./clover"
 import { diff } from "./comment"
 
 async function main() {
@@ -11,7 +11,7 @@ async function main() {
 	const prefix = path.dirname(path.dirname(path.resolve(file))) + "/"
 
 	const content = await fs.readFile(file, "utf-8")
-	const lcov = await parse(content)
+	const clover = await parse(content)
 
 	let before
 	if (beforeFile) {
@@ -27,7 +27,7 @@ async function main() {
 		base: "master",
 	}
 
-	console.log(diff(lcov, before, options))
+	console.log(diff(clover, before, options))
 }
 
 main().catch(function(err) {

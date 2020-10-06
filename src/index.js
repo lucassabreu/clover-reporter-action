@@ -2,21 +2,22 @@ import { promises as fs } from "fs"
 import core from "@actions/core"
 import { GitHub, context } from "@actions/github"
 
-import { parse } from "./lcov"
+import { parse } from "./clover"
 import { diff } from "./comment"
 
 async function main() {
 	const token = core.getInput("github-token")
-	const lcovFile = core.getInput("lcov-file") || "./coverage/lcov.info"
-	const baseFile = core.getInput("lcov-base")
+	const cloverFile = core.getInput("clover-file") || "./coverage/clover.xml"
+	const baseFile = core.getInput("clover-base")
 
-	const raw = await fs.readFile(lcovFile, "utf-8").catch(err => null)
+	const raw = await fs.readFile(cloverFile, "utf-8").catch(err => null)
 	if (!raw) {
-		console.log(`No coverage report found at '${lcovFile}', exiting...`)
+		console.log(`No coverage report found at '${cloverFile}', exiting...`)
 		return
 	}
 
-	const baseRaw = baseFile && await fs.readFile(baseFile, "utf-8").catch(err => null)
+	const baseRaw =
+		baseFile && (await fs.readFile(baseFile, "utf-8").catch(err => null))
 	if (baseFile && !baseRaw) {
 		console.log(`No coverage report found at '${baseFile}', ignoring...`)
 	}
@@ -29,15 +30,15 @@ async function main() {
 		base: context.payload.pull_request.base.ref,
 	}
 
-	const lcov = await parse(raw)
-	const baselcov = baseRaw && await parse(baseRaw)
-	const body = diff(lcov, baselcov, options)
+	const clover = await parse(raw)
+	const baseclover = baseRaw && (await parse(baseRaw))
+	const body = diff(clover, baseclover, options)
 
 	await new GitHub(token).issues.createComment({
 		repo: context.repo.repo,
 		owner: context.repo.owner,
 		issue_number: context.payload.pull_request.number,
-		body: diff(lcov, baselcov, options),
+		body: diff(clover, baseclover, options),
 	})
 }
 
