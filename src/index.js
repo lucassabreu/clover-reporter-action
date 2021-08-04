@@ -22,6 +22,8 @@ async function main() {
 		console.log(`No coverage report found at '${baseFile}', ignoring...`)
 	}
 
+	console.log("oi")
+
 	const options = {
 		repository: context.payload.repository.full_name,
 		prefix: `${process.env.GITHUB_WORKSPACE}/`,
@@ -37,7 +39,9 @@ async function main() {
 	}
 
 	const clover = await parse(raw)
+	console.log("oi2")
 	const baseclover = baseRaw && (await parse(baseRaw))
+	console.log("oi3")
 	const body = diff(clover, baseclover, options)
 
 	if (context.eventName === "pull_request") {
@@ -45,14 +49,14 @@ async function main() {
 			repo: context.repo.repo,
 			owner: context.repo.owner,
 			issue_number: context.payload.pull_request.number,
-			body: diff(clover, baseclover, options),
+			body,
 		})
 	} else if (context.eventName === "push") {
 		await new GitHub(token).repos.createCommitComment({
 			repo: context.repo.repo,
 			owner: context.repo.owner,
 			commit_sha: options.commit,
-			body: diff(clover, baseclover, options),
+			body,
 		})
 	}
 }

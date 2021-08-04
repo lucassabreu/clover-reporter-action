@@ -2,6 +2,7 @@ import { parseContent } from "@technote-space/clover-json"
 
 // Parse clover string into clover data
 export function parse(data) {
+	console.log("oi4")
 	return parseContent(data)
 }
 

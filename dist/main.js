@@ -30858,6 +30858,7 @@ var dist_2 = dist.parseContent;
 
 // Parse clover string into clover data
 function parse$1(data) {
+	console.log("oi4");
 	return dist_2(data)
 }
 
@@ -31098,6 +31099,8 @@ async function main$1() {
 		console.log(`No coverage report found at '${baseFile}', ignoring...`);
 	}
 
+	console.log("oi");
+
 	const options = {
 		repository: github_1.payload.repository.full_name,
 		prefix: `${process.env.GITHUB_WORKSPACE}/`,
@@ -31113,7 +31116,9 @@ async function main$1() {
 	}
 
 	const clover = await parse$1(raw);
+	console.log("oi2");
 	const baseclover = baseRaw && (await parse$1(baseRaw));
+	console.log("oi3");
 	const body = diff(clover, baseclover, options);
 
 	if (github_1.eventName === "pull_request") {
@@ -31121,14 +31126,14 @@ async function main$1() {
 			repo: github_1.repo.repo,
 			owner: github_1.repo.owner,
 			issue_number: github_1.payload.pull_request.number,
-			body: diff(clover, baseclover, options),
+			body,
 		});
 	} else if (github_1.eventName === "push") {
 		await new github_2(token).repos.createCommitComment({
 			repo: github_1.repo.repo,
 			owner: github_1.repo.owner,
 			commit_sha: options.commit,
-			body: diff(clover, baseclover, options),
+			body,
 		});
 	}
 }
