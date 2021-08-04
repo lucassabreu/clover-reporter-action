@@ -12911,6 +12911,7 @@ async function main() {
 	const body = diff(clover, baseclover, options);
 
 	const gitub = github_1(token);
+	console.log("oi4");
 
 	if (context.eventName === "pull_request") {
 		await github.issues.createComment({
