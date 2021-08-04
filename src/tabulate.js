@@ -4,6 +4,7 @@ import { th, tr, td, table, tbody, a, b, span, fragment } from "./html"
 export function tabulate(clover, options) {
 	const head = tr(
 		th("File"),
+		th("Stmts"),
 		th("Branches"),
 		th("Funcs"),
 		th("Lines"),
@@ -37,12 +38,28 @@ function toFolder(path) {
 		return ""
 	}
 
-	return tr(td({ colspan: 5 }, b(path)))
+	return tr(td({ colspan: 6 }, b(path)))
+}
+
+function getStatement(file) {
+	const { branches, functions, lines } = file
+
+	return [branches, functions, lines].reduce(function(acc, curr) {
+		if (!curr) {
+			return acc
+		}
+
+		return {
+			hit: acc.hit + curr.hit,
+			found: acc.found + curr.found,
+		}
+	}, { hit: 0, found: 0 })
 }
 
 function toRow(file, indent, options) {
 	return tr(
 		td(filename(file, indent, options)),
+		td(percentage(getStatement(file), options)),
 		td(percentage(file.branches, options)),
 		td(percentage(file.functions, options)),
 		td(percentage(file.lines, options)),
@@ -81,13 +98,44 @@ function uncovered(file, options) {
 		.filter(line => line.hit === 0)
 		.map(line => line.line)
 
-	const all = [...branches, ...lines].sort()
+	const all = ranges([...branches, ...lines])
+
 
 	return all
-		.map(function(line) {
+		.map(function(range) {
+			const fragment = range.start === range.end ? `L${range.start}` : `L${range.start}-L${range.end}`
 			const relative = file.file.replace(options.prefix, "")
-			const href = `https://github.com/${options.repository}/blob/${options.commit}/${relative}#L${line}`
-			return a({ href }, line)
+			const href = `https://github.com/${options.repository}/blob/${options.commit}/${relative}#${fragment}`
+			const text = range.start === range.end ? range.start : `${range.start}&ndash;${range.end}`
+
+			return a({ href }, text)
 		})
 		.join(", ")
+}
+
+function ranges(linenos) {
+	const res = []
+
+	let last = null
+
+	linenos.sort().forEach(function(lineno) {
+		if (last === null) {
+			last = { start: lineno, end: lineno }
+			return
+		}
+
+		if (last.end + 1 === lineno) {
+			last.end = lineno
+			return
+		}
+
+		res.push(last)
+		last = { start: lineno, end: lineno }
+	})
+
+	if (last) {
+		res.push(last)
+	}
+
+	return res
 }

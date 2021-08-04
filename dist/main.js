@@ -896,29 +896,6 @@ exports.endpoint = endpoint;
 unwrapExports(distNode$1);
 var distNode_1$1 = distNode$1.endpoint;
 
-var distNode$2 = createCommonjsModule(function (module, exports) {
-
-Object.defineProperty(exports, '__esModule', { value: true });
-
-function getUserAgent() {
-  if (typeof navigator === "object" && "userAgent" in navigator) {
-    return navigator.userAgent;
-  }
-
-  if (typeof process === "object" && "version" in process) {
-    return `Node.js/${process.version.substr(1)} (${process.platform}; ${process.arch})`;
-  }
-
-  return "<environment undetectable>";
-}
-
-exports.getUserAgent = getUserAgent;
-
-});
-
-unwrapExports(distNode$2);
-var distNode_1$2 = distNode$2.getUserAgent;
-
 var isPlainObject_1$1 = createCommonjsModule(function (module, exports) {
 
 Object.defineProperty(exports, '__esModule', { value: true });
@@ -2601,7 +2578,7 @@ var lib = /*#__PURE__*/Object.freeze({
 	FetchError: FetchError
 });
 
-var distNode$3 = createCommonjsModule(function (module, exports) {
+var distNode$2 = createCommonjsModule(function (module, exports) {
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
@@ -2623,8 +2600,8 @@ class Deprecation extends Error {
 exports.Deprecation = Deprecation;
 });
 
-unwrapExports(distNode$3);
-var distNode_1$3 = distNode$3.Deprecation;
+unwrapExports(distNode$2);
+var distNode_1$2 = distNode$2.Deprecation;
 
 // Returns a wrapper function that returns a wrapped callback
 // The wrapper function should do some stuff, and return a
@@ -2703,7 +2680,7 @@ function onceStrict (fn) {
 }
 once_1.strict = strict;
 
-var distNode$4 = createCommonjsModule(function (module, exports) {
+var distNode$3 = createCommonjsModule(function (module, exports) {
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
@@ -2731,7 +2708,7 @@ class RequestError extends Error {
     this.status = statusCode;
     Object.defineProperty(this, "code", {
       get() {
-        logOnce(new distNode$3.Deprecation("[@octokit/request-error] `error.code` is deprecated, use `error.status`."));
+        logOnce(new distNode$2.Deprecation("[@octokit/request-error] `error.code` is deprecated, use `error.status`."));
         return statusCode;
       }
 
@@ -2760,12 +2737,12 @@ exports.RequestError = RequestError;
 
 });
 
-unwrapExports(distNode$4);
-var distNode_1$4 = distNode$4.RequestError;
+unwrapExports(distNode$3);
+var distNode_1$3 = distNode$3.RequestError;
 
 var require$$0 = getCjsExportFromNamespace(lib);
 
-var distNode$5 = createCommonjsModule(function (module, exports) {
+var distNode$4 = createCommonjsModule(function (module, exports) {
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
@@ -2815,14 +2792,14 @@ function fetchWrapper(requestOptions) {
         return;
       }
 
-      throw new distNode$4.RequestError(response.statusText, status, {
+      throw new distNode$3.RequestError(response.statusText, status, {
         headers,
         request: requestOptions
       });
     }
 
     if (status === 304) {
-      throw new distNode$4.RequestError("Not modified", status, {
+      throw new distNode$3.RequestError("Not modified", status, {
         headers,
         request: requestOptions
       });
@@ -2830,7 +2807,7 @@ function fetchWrapper(requestOptions) {
 
     if (status >= 400) {
       return response.text().then(message => {
-        const error = new distNode$4.RequestError(message, status, {
+        const error = new distNode$3.RequestError(message, status, {
           headers,
           request: requestOptions
         });
@@ -2867,11 +2844,11 @@ function fetchWrapper(requestOptions) {
       data
     };
   }).catch(error => {
-    if (error instanceof distNode$4.RequestError) {
+    if (error instanceof distNode$3.RequestError) {
       throw error;
     }
 
-    throw new distNode$4.RequestError(error.message, 500, {
+    throw new distNode$3.RequestError(error.message, 500, {
       headers,
       request: requestOptions
     });
@@ -2907,7 +2884,7 @@ function withDefaults(oldEndpoint, newDefaults) {
 
 const request = withDefaults(distNode$1.endpoint, {
   headers: {
-    "user-agent": `octokit-request.js/${VERSION} ${distNode$2.getUserAgent()}`
+    "user-agent": `octokit-request.js/${VERSION} ${distNode.getUserAgent()}`
   }
 });
 
@@ -2915,8 +2892,8 @@ exports.request = request;
 
 });
 
-unwrapExports(distNode$5);
-var distNode_1$5 = distNode$5.request;
+unwrapExports(distNode$4);
+var distNode_1$4 = distNode$4.request;
 
 const nameMap = new Map([
 	[20, ['Big Sur', '11']],
@@ -6284,54 +6261,45 @@ function getUserAgentNode () {
   }
 }
 
-var _args = [
-	[
-		"@octokit/graphql@2.1.3",
-		"/home/dan/git/binarycocoa/clover-reporter-action"
-	]
+var name = "@octokit/graphql";
+var version = "2.1.3";
+var publishConfig = {
+	access: "public"
+};
+var description = "GitHub GraphQL API client for browsers and Node";
+var main = "index.js";
+var scripts = {
+	prebuild: "mkdirp dist/",
+	build: "npm-run-all build:*",
+	"build:development": "webpack --mode development --entry . --output-library=octokitGraphql --output=./dist/octokit-graphql.js --profile --json > dist/bundle-stats.json",
+	"build:production": "webpack --mode production --entry . --plugin=compression-webpack-plugin --output-library=octokitGraphql --output-path=./dist --output-filename=octokit-graphql.min.js --devtool source-map",
+	"bundle-report": "webpack-bundle-analyzer dist/bundle-stats.json --mode=static --no-open --report dist/bundle-report.html",
+	coverage: "nyc report --reporter=html && open coverage/index.html",
+	"coverage:upload": "nyc report --reporter=text-lcov | coveralls",
+	pretest: "standard",
+	test: "nyc mocha test/*-test.js",
+	"test:browser": "cypress run --browser chrome"
+};
+var repository = {
+	type: "git",
+	url: "https://github.com/octokit/graphql.js.git"
+};
+var keywords = [
+	"octokit",
+	"github",
+	"api",
+	"graphql"
 ];
-var _from = "@octokit/graphql@2.1.3";
-var _id = "@octokit/graphql@2.1.3";
-var _inBundle = false;
-var _integrity = "sha512-XoXJqL2ondwdnMIW3wtqJWEwcBfKk37jO/rYkoxNPEVeLBDGsGO1TCWggrAlq3keGt/O+C/7VepXnukUxwt5vA==";
-var _location = "/@octokit/graphql";
-var _phantomChildren = {
-};
-var _requested = {
-	type: "version",
-	registry: true,
-	raw: "@octokit/graphql@2.1.3",
-	name: "@octokit/graphql",
-	escapedName: "@octokit%2fgraphql",
-	scope: "@octokit",
-	rawSpec: "2.1.3",
-	saveSpec: null,
-	fetchSpec: "2.1.3"
-};
-var _requiredBy = [
-	"/@actions/github"
-];
-var _resolved = "https://registry.npmjs.org/@octokit/graphql/-/graphql-2.1.3.tgz";
-var _spec = "2.1.3";
-var _where = "/home/dan/git/binarycocoa/clover-reporter-action";
-var author = {
-	name: "Gregor Martynus",
-	url: "https://github.com/gr2m"
-};
+var author = "Gregor Martynus (https://github.com/gr2m)";
+var license = "MIT";
 var bugs = {
 	url: "https://github.com/octokit/graphql.js/issues"
 };
-var bundlesize = [
-	{
-		path: "./dist/octokit-graphql.min.js.gz",
-		maxSize: "5KB"
-	}
-];
+var homepage = "https://github.com/octokit/graphql.js#readme";
 var dependencies = {
 	"@octokit/request": "^5.0.0",
 	"universal-user-agent": "^2.0.3"
 };
-var description = "GitHub GraphQL API client for browsers and Node";
 var devDependencies = {
 	chai: "^4.2.0",
 	"compression-webpack-plugin": "^2.0.0",
@@ -6349,22 +6317,12 @@ var devDependencies = {
 	"webpack-bundle-analyzer": "^3.1.0",
 	"webpack-cli": "^3.2.3"
 };
-var files = [
-	"lib"
+var bundlesize = [
+	{
+		path: "./dist/octokit-graphql.min.js.gz",
+		maxSize: "5KB"
+	}
 ];
-var homepage = "https://github.com/octokit/graphql.js#readme";
-var keywords = [
-	"octokit",
-	"github",
-	"api",
-	"graphql"
-];
-var license = "MIT";
-var main = "index.js";
-var name = "@octokit/graphql";
-var publishConfig = {
-	access: "public"
-};
 var release = {
 	publish: [
 		"@semantic-release/npm",
@@ -6377,22 +6335,6 @@ var release = {
 		}
 	]
 };
-var repository = {
-	type: "git",
-	url: "git+https://github.com/octokit/graphql.js.git"
-};
-var scripts = {
-	build: "npm-run-all build:*",
-	"build:development": "webpack --mode development --entry . --output-library=octokitGraphql --output=./dist/octokit-graphql.js --profile --json > dist/bundle-stats.json",
-	"build:production": "webpack --mode production --entry . --plugin=compression-webpack-plugin --output-library=octokitGraphql --output-path=./dist --output-filename=octokit-graphql.min.js --devtool source-map",
-	"bundle-report": "webpack-bundle-analyzer dist/bundle-stats.json --mode=static --no-open --report dist/bundle-report.html",
-	coverage: "nyc report --reporter=html && open coverage/index.html",
-	"coverage:upload": "nyc report --reporter=text-lcov | coveralls",
-	prebuild: "mkdirp dist/",
-	pretest: "standard",
-	test: "nyc mocha test/*-test.js",
-	"test:browser": "cypress run --browser chrome"
-};
 var standard = {
 	globals: [
 		"describe",
@@ -6404,72 +6346,50 @@ var standard = {
 		"expect"
 	]
 };
-var version = "2.1.3";
+var files = [
+	"lib"
+];
 var _package = {
-	_args: _args,
-	_from: _from,
-	_id: _id,
-	_inBundle: _inBundle,
-	_integrity: _integrity,
-	_location: _location,
-	_phantomChildren: _phantomChildren,
-	_requested: _requested,
-	_requiredBy: _requiredBy,
-	_resolved: _resolved,
-	_spec: _spec,
-	_where: _where,
-	author: author,
-	bugs: bugs,
-	bundlesize: bundlesize,
-	dependencies: dependencies,
-	description: description,
-	devDependencies: devDependencies,
-	files: files,
-	homepage: homepage,
-	keywords: keywords,
-	license: license,
-	main: main,
 	name: name,
+	version: version,
 	publishConfig: publishConfig,
-	release: release,
-	repository: repository,
+	description: description,
+	main: main,
 	scripts: scripts,
+	repository: repository,
+	keywords: keywords,
+	author: author,
+	license: license,
+	bugs: bugs,
+	homepage: homepage,
+	dependencies: dependencies,
+	devDependencies: devDependencies,
+	bundlesize: bundlesize,
+	release: release,
 	standard: standard,
-	version: version
+	files: files
 };
 
 var _package$1 = /*#__PURE__*/Object.freeze({
 	__proto__: null,
-	_args: _args,
-	_from: _from,
-	_id: _id,
-	_inBundle: _inBundle,
-	_integrity: _integrity,
-	_location: _location,
-	_phantomChildren: _phantomChildren,
-	_requested: _requested,
-	_requiredBy: _requiredBy,
-	_resolved: _resolved,
-	_spec: _spec,
-	_where: _where,
-	author: author,
-	bugs: bugs,
-	bundlesize: bundlesize,
-	dependencies: dependencies,
-	description: description,
-	devDependencies: devDependencies,
-	files: files,
-	homepage: homepage,
-	keywords: keywords,
-	license: license,
-	main: main,
 	name: name,
-	publishConfig: publishConfig,
-	release: release,
-	repository: repository,
-	scripts: scripts,
-	standard: standard,
 	version: version,
+	publishConfig: publishConfig,
+	description: description,
+	main: main,
+	scripts: scripts,
+	repository: repository,
+	keywords: keywords,
+	author: author,
+	license: license,
+	bugs: bugs,
+	homepage: homepage,
+	dependencies: dependencies,
+	devDependencies: devDependencies,
+	bundlesize: bundlesize,
+	release: release,
+	standard: standard,
+	files: files,
 	'default': _package
 });
 
@@ -6543,7 +6463,7 @@ function withDefaults (request, newDefaults) {
 
 var require$$1 = getCjsExportFromNamespace(_package$1);
 
-const { request } = distNode$5;
+const { request } = distNode$4;
 
 
 const version$1 = require$$1.version;
@@ -6559,7 +6479,7 @@ var graphql$1 = withDefaults_1(request, {
   }
 });
 
-var distNode$6 = createCommonjsModule(function (module, exports) {
+var distNode$5 = createCommonjsModule(function (module, exports) {
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
@@ -6591,10 +6511,10 @@ exports.requestLog = requestLog;
 
 });
 
-unwrapExports(distNode$6);
-var distNode_1$6 = distNode$6.requestLog;
+unwrapExports(distNode$5);
+var distNode_1$5 = distNode$5.requestLog;
 
-var distNode$7 = createCommonjsModule(function (module, exports) {
+var distNode$6 = createCommonjsModule(function (module, exports) {
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
@@ -19720,7 +19640,7 @@ function registerEndpoints(octokit, routes) {
 
       if (apiOptions.deprecated) {
         octokit[namespaceName][apiName] = Object.assign(function deprecatedEndpointMethod() {
-          octokit.log.warn(new distNode$3.Deprecation(`[@octokit/rest] ${apiOptions.deprecated}`));
+          octokit.log.warn(new distNode$2.Deprecation(`[@octokit/rest] ${apiOptions.deprecated}`));
           octokit[namespaceName][apiName] = request;
           return request.apply(null, arguments);
         }, request);
@@ -19738,7 +19658,7 @@ function patchForDeprecation(octokit, apiOptions, method, methodName) {
     Object.keys(options).forEach(key => {
       if (apiOptions.params[key] && apiOptions.params[key].deprecated) {
         const aliasKey = apiOptions.params[key].alias;
-        octokit.log.warn(new distNode$3.Deprecation(`[@octokit/rest] "${key}" parameter is deprecated for "${methodName}". Use "${aliasKey}" instead`));
+        octokit.log.warn(new distNode$2.Deprecation(`[@octokit/rest] "${key}" parameter is deprecated for "${methodName}". Use "${aliasKey}" instead`));
 
         if (!(aliasKey in options)) {
           options[aliasKey] = options[key];
@@ -19777,7 +19697,7 @@ function restEndpointMethods(octokit) {
     Object.defineProperty(octokit, deprecatedScope, {
       get() {
         octokit.log.warn( // @ts-ignore
-        new distNode$3.Deprecation(`[@octokit/plugin-rest-endpoint-methods] "octokit.${deprecatedScope}.*" methods are deprecated, use "octokit.${scope}.*" instead`)); // @ts-ignore
+        new distNode$2.Deprecation(`[@octokit/plugin-rest-endpoint-methods] "octokit.${deprecatedScope}.*" methods are deprecated, use "octokit.${scope}.*" instead`)); // @ts-ignore
 
         return octokit[scope];
       }
@@ -19792,8 +19712,8 @@ exports.restEndpointMethods = restEndpointMethods;
 
 });
 
-unwrapExports(distNode$7);
-var distNode_1$7 = distNode$7.restEndpointMethods;
+unwrapExports(distNode$6);
+var distNode_1$6 = distNode$6.restEndpointMethods;
 
 var register_1 = register;
 
@@ -19946,7 +19866,7 @@ beforeAfterHook.Hook = Hook_1;
 beforeAfterHook.Singular = Singular;
 beforeAfterHook.Collection = Collection;
 
-var distNode$8 = createCommonjsModule(function (module, exports) {
+var distNode$7 = createCommonjsModule(function (module, exports) {
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
@@ -19970,56 +19890,22 @@ exports.getUserAgent = getUserAgent;
 
 });
 
-unwrapExports(distNode$8);
-var distNode_1$8 = distNode$8.getUserAgent;
+unwrapExports(distNode$7);
+var distNode_1$7 = distNode$7.getUserAgent;
 
-var _args$1 = [
-	[
-		"@octokit/rest@16.43.2",
-		"/home/dan/git/binarycocoa/clover-reporter-action"
-	]
+var name$1 = "@octokit/rest";
+var version$2 = "16.43.2";
+var publishConfig$1 = {
+	access: "public"
+};
+var description$1 = "GitHub REST API client for Node.js";
+var keywords$1 = [
+	"octokit",
+	"github",
+	"rest",
+	"api-client"
 ];
-var _from$1 = "@octokit/rest@16.43.2";
-var _id$1 = "@octokit/rest@16.43.2";
-var _inBundle$1 = false;
-var _integrity$1 = "sha512-ngDBevLbBTFfrHZeiS7SAMAZ6ssuVmXuya+F/7RaVvlysgGa1JKJkKWY+jV6TCJYcW0OALfJ7nTIGXcBXzycfQ==";
-var _location$1 = "/@octokit/rest";
-var _phantomChildren$1 = {
-	"@types/node": "14.11.4",
-	deprecation: "2.3.1",
-	once: "1.4.0",
-	"os-name": "3.1.0"
-};
-var _requested$1 = {
-	type: "version",
-	registry: true,
-	raw: "@octokit/rest@16.43.2",
-	name: "@octokit/rest",
-	escapedName: "@octokit%2frest",
-	scope: "@octokit",
-	rawSpec: "16.43.2",
-	saveSpec: null,
-	fetchSpec: "16.43.2"
-};
-var _requiredBy$1 = [
-	"/@actions/github"
-];
-var _resolved$1 = "https://registry.npmjs.org/@octokit/rest/-/rest-16.43.2.tgz";
-var _spec$1 = "16.43.2";
-var _where$1 = "/home/dan/git/binarycocoa/clover-reporter-action";
-var author$1 = {
-	name: "Gregor Martynus",
-	url: "https://github.com/gr2m"
-};
-var bugs$1 = {
-	url: "https://github.com/octokit/rest.js/issues"
-};
-var bundlesize$1 = [
-	{
-		path: "./dist/octokit-rest.min.js.gz",
-		maxSize: "33 kB"
-	}
-];
+var author$1 = "Gregor Martynus (https://github.com/gr2m)";
 var contributors = [
 	{
 		name: "Mike de Boer",
@@ -20038,6 +19924,7 @@ var contributors = [
 		url: "https://github.com/gr2m"
 	}
 ];
+var repository$1 = "https://github.com/octokit/rest.js";
 var dependencies$1 = {
 	"@octokit/auth-token": "^2.4.0",
 	"@octokit/plugin-paginate-rest": "^1.1.1",
@@ -20056,7 +19943,6 @@ var dependencies$1 = {
 	once: "^1.4.0",
 	"universal-user-agent": "^4.0.0"
 };
-var description$1 = "GitHub REST API client for Node.js";
 var devDependencies$1 = {
 	"@gimenete/type-writer": "^0.1.3",
 	"@octokit/auth": "^1.1.1",
@@ -20092,28 +19978,40 @@ var devDependencies$1 = {
 	"webpack-bundle-analyzer": "^3.0.0",
 	"webpack-cli": "^3.0.0"
 };
+var types = "index.d.ts";
+var scripts$1 = {
+	coverage: "nyc report --reporter=html && open coverage/index.html",
+	lint: "prettier --check '{lib,plugins,scripts,test}/**/*.{js,json,ts}' 'docs/*.{js,json}' 'docs/src/**/*' index.js README.md package.json",
+	"lint:fix": "prettier --write '{lib,plugins,scripts,test}/**/*.{js,json,ts}' 'docs/*.{js,json}' 'docs/src/**/*' index.js README.md package.json",
+	pretest: "npm run -s lint",
+	test: "nyc mocha test/mocha-node-setup.js \"test/*/**/*-test.js\"",
+	"test:browser": "cypress run --browser chrome",
+	build: "npm-run-all build:*",
+	"build:ts": "npm run -s update-endpoints:typescript",
+	"prebuild:browser": "mkdirp dist/",
+	"build:browser": "npm-run-all build:browser:*",
+	"build:browser:development": "webpack --mode development --entry . --output-library=Octokit --output=./dist/octokit-rest.js --profile --json > dist/bundle-stats.json",
+	"build:browser:production": "webpack --mode production --entry . --plugin=compression-webpack-plugin --output-library=Octokit --output-path=./dist --output-filename=octokit-rest.min.js --devtool source-map",
+	"generate-bundle-report": "webpack-bundle-analyzer dist/bundle-stats.json --mode=static --no-open --report dist/bundle-report.html",
+	"update-endpoints": "npm-run-all update-endpoints:*",
+	"update-endpoints:fetch-json": "node scripts/update-endpoints/fetch-json",
+	"update-endpoints:typescript": "node scripts/update-endpoints/typescript",
+	"prevalidate:ts": "npm run -s build:ts",
+	"validate:ts": "tsc --target es6 --noImplicitAny index.d.ts",
+	"postvalidate:ts": "tsc --noEmit --target es6 test/typescript-validate.ts",
+	"start-fixtures-server": "octokit-fixtures-server"
+};
+var license$1 = "MIT";
 var files$1 = [
 	"index.js",
 	"index.d.ts",
 	"lib",
 	"plugins"
 ];
-var homepage$1 = "https://github.com/octokit/rest.js#readme";
-var keywords$1 = [
-	"octokit",
-	"github",
-	"rest",
-	"api-client"
-];
-var license$1 = "MIT";
-var name$1 = "@octokit/rest";
 var nyc = {
 	ignore: [
 		"test"
 	]
-};
-var publishConfig$1 = {
-	access: "public"
 };
 var release$1 = {
 	publish: [
@@ -20127,101 +20025,51 @@ var release$1 = {
 		}
 	]
 };
-var repository$1 = {
-	type: "git",
-	url: "git+https://github.com/octokit/rest.js.git"
-};
-var scripts$1 = {
-	build: "npm-run-all build:*",
-	"build:browser": "npm-run-all build:browser:*",
-	"build:browser:development": "webpack --mode development --entry . --output-library=Octokit --output=./dist/octokit-rest.js --profile --json > dist/bundle-stats.json",
-	"build:browser:production": "webpack --mode production --entry . --plugin=compression-webpack-plugin --output-library=Octokit --output-path=./dist --output-filename=octokit-rest.min.js --devtool source-map",
-	"build:ts": "npm run -s update-endpoints:typescript",
-	coverage: "nyc report --reporter=html && open coverage/index.html",
-	"generate-bundle-report": "webpack-bundle-analyzer dist/bundle-stats.json --mode=static --no-open --report dist/bundle-report.html",
-	lint: "prettier --check '{lib,plugins,scripts,test}/**/*.{js,json,ts}' 'docs/*.{js,json}' 'docs/src/**/*' index.js README.md package.json",
-	"lint:fix": "prettier --write '{lib,plugins,scripts,test}/**/*.{js,json,ts}' 'docs/*.{js,json}' 'docs/src/**/*' index.js README.md package.json",
-	"postvalidate:ts": "tsc --noEmit --target es6 test/typescript-validate.ts",
-	"prebuild:browser": "mkdirp dist/",
-	pretest: "npm run -s lint",
-	"prevalidate:ts": "npm run -s build:ts",
-	"start-fixtures-server": "octokit-fixtures-server",
-	test: "nyc mocha test/mocha-node-setup.js \"test/*/**/*-test.js\"",
-	"test:browser": "cypress run --browser chrome",
-	"update-endpoints": "npm-run-all update-endpoints:*",
-	"update-endpoints:fetch-json": "node scripts/update-endpoints/fetch-json",
-	"update-endpoints:typescript": "node scripts/update-endpoints/typescript",
-	"validate:ts": "tsc --target es6 --noImplicitAny index.d.ts"
-};
-var types = "index.d.ts";
-var version$2 = "16.43.2";
+var bundlesize$1 = [
+	{
+		path: "./dist/octokit-rest.min.js.gz",
+		maxSize: "33 kB"
+	}
+];
 var _package$2 = {
-	_args: _args$1,
-	_from: _from$1,
-	_id: _id$1,
-	_inBundle: _inBundle$1,
-	_integrity: _integrity$1,
-	_location: _location$1,
-	_phantomChildren: _phantomChildren$1,
-	_requested: _requested$1,
-	_requiredBy: _requiredBy$1,
-	_resolved: _resolved$1,
-	_spec: _spec$1,
-	_where: _where$1,
-	author: author$1,
-	bugs: bugs$1,
-	bundlesize: bundlesize$1,
-	contributors: contributors,
-	dependencies: dependencies$1,
-	description: description$1,
-	devDependencies: devDependencies$1,
-	files: files$1,
-	homepage: homepage$1,
-	keywords: keywords$1,
-	license: license$1,
 	name: name$1,
-	nyc: nyc,
+	version: version$2,
 	publishConfig: publishConfig$1,
-	release: release$1,
+	description: description$1,
+	keywords: keywords$1,
+	author: author$1,
+	contributors: contributors,
 	repository: repository$1,
-	scripts: scripts$1,
+	dependencies: dependencies$1,
+	devDependencies: devDependencies$1,
 	types: types,
-	version: version$2
+	scripts: scripts$1,
+	license: license$1,
+	files: files$1,
+	nyc: nyc,
+	release: release$1,
+	bundlesize: bundlesize$1
 };
 
 var _package$3 = /*#__PURE__*/Object.freeze({
 	__proto__: null,
-	_args: _args$1,
-	_from: _from$1,
-	_id: _id$1,
-	_inBundle: _inBundle$1,
-	_integrity: _integrity$1,
-	_location: _location$1,
-	_phantomChildren: _phantomChildren$1,
-	_requested: _requested$1,
-	_requiredBy: _requiredBy$1,
-	_resolved: _resolved$1,
-	_spec: _spec$1,
-	_where: _where$1,
-	author: author$1,
-	bugs: bugs$1,
-	bundlesize: bundlesize$1,
-	contributors: contributors,
-	dependencies: dependencies$1,
-	description: description$1,
-	devDependencies: devDependencies$1,
-	files: files$1,
-	homepage: homepage$1,
-	keywords: keywords$1,
-	license: license$1,
 	name: name$1,
-	nyc: nyc,
-	publishConfig: publishConfig$1,
-	release: release$1,
-	repository: repository$1,
-	scripts: scripts$1,
-	types: types,
 	version: version$2,
+	publishConfig: publishConfig$1,
+	description: description$1,
+	keywords: keywords$1,
+	author: author$1,
+	contributors: contributors,
+	repository: repository$1,
+	dependencies: dependencies$1,
+	devDependencies: devDependencies$1,
+	types: types,
+	scripts: scripts$1,
+	license: license$1,
+	files: files$1,
+	nyc: nyc,
+	release: release$1,
+	bundlesize: bundlesize$1,
 	'default': _package$2
 });
 
@@ -20229,8 +20077,8 @@ var pkg = getCjsExportFromNamespace(_package$3);
 
 var parseClientOptions = parseOptions;
 
-const { Deprecation } = distNode$3;
-const { getUserAgent } = distNode$8;
+const { Deprecation } = distNode$2;
+const { getUserAgent } = distNode$7;
 
 
 
@@ -20319,7 +20167,7 @@ function parseOptions(options, log, hook) {
 
 var constructor_1 = Octokit;
 
-const { request: request$1 } = distNode$5;
+const { request: request$1 } = distNode$4;
 
 
 
@@ -20370,7 +20218,7 @@ function factory(plugins) {
 
 var core$3 = factory_1();
 
-var distNode$9 = createCommonjsModule(function (module, exports) {
+var distNode$8 = createCommonjsModule(function (module, exports) {
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
@@ -20421,8 +20269,8 @@ exports.createTokenAuth = createTokenAuth;
 
 });
 
-unwrapExports(distNode$9);
-var distNode_1$9 = distNode$9.createTokenAuth;
+unwrapExports(distNode$8);
+var distNode_1$8 = distNode$8.createTokenAuth;
 
 var btoaNode = function btoa(str) {
   return new Buffer(str).toString('base64')
@@ -20510,7 +20358,7 @@ function authenticationBeforeRequest(state, options) {
     });
 }
 
-var distNode$a = createCommonjsModule(function (module, exports) {
+var distNode$9 = createCommonjsModule(function (module, exports) {
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
@@ -20538,7 +20386,7 @@ class RequestError extends Error {
     this.status = statusCode;
     Object.defineProperty(this, "code", {
       get() {
-        logOnce(new distNode$3.Deprecation("[@octokit/request-error] `error.code` is deprecated, use `error.status`."));
+        logOnce(new distNode$2.Deprecation("[@octokit/request-error] `error.code` is deprecated, use `error.status`."));
         return statusCode;
       }
 
@@ -20567,12 +20415,12 @@ exports.RequestError = RequestError;
 
 });
 
-unwrapExports(distNode$a);
-var distNode_1$a = distNode$a.RequestError;
+unwrapExports(distNode$9);
+var distNode_1$9 = distNode$9.RequestError;
 
 var requestError = authenticationRequestError;
 
-const { RequestError } = distNode$a;
+const { RequestError } = distNode$9;
 
 function authenticationRequestError(state, error, options) {
   if (!error.headers) throw error;
@@ -20656,8 +20504,8 @@ function validateAuth(auth) {
 
 var authentication = authenticationPlugin;
 
-const { createTokenAuth } = distNode$9;
-const { Deprecation: Deprecation$1 } = distNode$3;
+const { createTokenAuth } = distNode$8;
+const { Deprecation: Deprecation$1 } = distNode$2;
 
 
 
@@ -20733,7 +20581,7 @@ function authenticationPlugin(octokit, options) {
 
 var authenticate_1 = authenticate;
 
-const { Deprecation: Deprecation$2 } = distNode$3;
+const { Deprecation: Deprecation$2 } = distNode$2;
 
 
 const deprecateAuthenticate = once_1((log, deprecation) => log.warn(deprecation));
@@ -21727,7 +21575,7 @@ function authenticationBeforeRequest$1(state, options) {
 
 var requestError$1 = authenticationRequestError$1;
 
-const { RequestError: RequestError$1 } = distNode$a;
+const { RequestError: RequestError$1 } = distNode$9;
 
 function authenticationRequestError$1(state, error, options) {
   /* istanbul ignore next */
@@ -21783,7 +21631,7 @@ function authenticationRequestError$1(state, error, options) {
 
 var authenticationDeprecated = authenticationPlugin$1;
 
-const { Deprecation: Deprecation$3 } = distNode$3;
+const { Deprecation: Deprecation$3 } = distNode$2;
 
 
 const deprecateAuthenticate$1 = once_1((log, deprecation) => log.warn(deprecation));
@@ -21813,7 +21661,7 @@ function authenticationPlugin$1(octokit, options) {
   octokit.hook.error("request", requestError$1.bind(null, state));
 }
 
-var distNode$b = createCommonjsModule(function (module, exports) {
+var distNode$a = createCommonjsModule(function (module, exports) {
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
@@ -21957,12 +21805,12 @@ exports.paginateRest = paginateRest;
 
 });
 
-unwrapExports(distNode$b);
-var distNode_1$b = distNode$b.paginateRest;
+unwrapExports(distNode$a);
+var distNode_1$a = distNode$a.paginateRest;
 
 var pagination = paginatePlugin;
 
-const { paginateRest } = distNode$b;
+const { paginateRest } = distNode$a;
 
 function paginatePlugin(octokit) {
   Object.assign(octokit, paginateRest(octokit));
@@ -23893,7 +23741,7 @@ var lodash_set = set;
 
 var validate_1 = validate$1;
 
-const { RequestError: RequestError$2 } = distNode$a;
+const { RequestError: RequestError$2 } = distNode$9;
 
 
 
@@ -24218,10 +24066,10 @@ function paginationMethodsPlugin (octokit) {
   octokit.hasPreviousPage = hasPreviousPage_1;
 }
 
-const { requestLog } = distNode$6;
+const { requestLog } = distNode$5;
 const {
   restEndpointMethods
-} = distNode$7;
+} = distNode$6;
 
 
 
@@ -24875,791 +24723,6 @@ var XMLNamedNodeMap = createCommonjsModule(function (module) {
     };
 
     return XMLNamedNodeMap;
-
-  })();
-
-}).call(commonjsGlobal);
-});
-
-var XMLNode = createCommonjsModule(function (module) {
-// Generated by CoffeeScript 1.12.7
-(function() {
-  var DocumentPosition$1, NodeType$1, XMLCData$1, XMLComment$1, XMLDeclaration$1, XMLDocType$1, XMLDummy$1, XMLElement$1, XMLNode, XMLNodeList$1, XMLProcessingInstruction$1, XMLRaw$1, XMLText$1, getValue, isEmpty, isFunction, isObject, ref1,
-    hasProp = {}.hasOwnProperty;
-
-  ref1 = Utility, isObject = ref1.isObject, isFunction = ref1.isFunction, isEmpty = ref1.isEmpty, getValue = ref1.getValue;
-
-  XMLElement$1 = null;
-
-  XMLCData$1 = null;
-
-  XMLComment$1 = null;
-
-  XMLDeclaration$1 = null;
-
-  XMLDocType$1 = null;
-
-  XMLRaw$1 = null;
-
-  XMLText$1 = null;
-
-  XMLProcessingInstruction$1 = null;
-
-  XMLDummy$1 = null;
-
-  NodeType$1 = null;
-
-  XMLNodeList$1 = null;
-
-  DocumentPosition$1 = null;
-
-  module.exports = XMLNode = (function() {
-    function XMLNode(parent1) {
-      this.parent = parent1;
-      if (this.parent) {
-        this.options = this.parent.options;
-        this.stringify = this.parent.stringify;
-      }
-      this.value = null;
-      this.children = [];
-      this.baseURI = null;
-      if (!XMLElement$1) {
-        XMLElement$1 = XMLElement;
-        XMLCData$1 = XMLCData;
-        XMLComment$1 = XMLComment;
-        XMLDeclaration$1 = XMLDeclaration;
-        XMLDocType$1 = XMLDocType;
-        XMLRaw$1 = XMLRaw;
-        XMLText$1 = XMLText;
-        XMLProcessingInstruction$1 = XMLProcessingInstruction;
-        XMLDummy$1 = XMLDummy;
-        NodeType$1 = NodeType;
-        XMLNodeList$1 = XMLNodeList;
-        DocumentPosition$1 = DocumentPosition;
-      }
-    }
-
-    Object.defineProperty(XMLNode.prototype, 'nodeName', {
-      get: function() {
-        return this.name;
-      }
-    });
-
-    Object.defineProperty(XMLNode.prototype, 'nodeType', {
-      get: function() {
-        return this.type;
-      }
-    });
-
-    Object.defineProperty(XMLNode.prototype, 'nodeValue', {
-      get: function() {
-        return this.value;
-      }
-    });
-
-    Object.defineProperty(XMLNode.prototype, 'parentNode', {
-      get: function() {
-        return this.parent;
-      }
-    });
-
-    Object.defineProperty(XMLNode.prototype, 'childNodes', {
-      get: function() {
-        if (!this.childNodeList || !this.childNodeList.nodes) {
-          this.childNodeList = new XMLNodeList$1(this.children);
-        }
-        return this.childNodeList;
-      }
-    });
-
-    Object.defineProperty(XMLNode.prototype, 'firstChild', {
-      get: function() {
-        return this.children[0] || null;
-      }
-    });
-
-    Object.defineProperty(XMLNode.prototype, 'lastChild', {
-      get: function() {
-        return this.children[this.children.length - 1] || null;
-      }
-    });
-
-    Object.defineProperty(XMLNode.prototype, 'previousSibling', {
-      get: function() {
-        var i;
-        i = this.parent.children.indexOf(this);
-        return this.parent.children[i - 1] || null;
-      }
-    });
-
-    Object.defineProperty(XMLNode.prototype, 'nextSibling', {
-      get: function() {
-        var i;
-        i = this.parent.children.indexOf(this);
-        return this.parent.children[i + 1] || null;
-      }
-    });
-
-    Object.defineProperty(XMLNode.prototype, 'ownerDocument', {
-      get: function() {
-        return this.document() || null;
-      }
-    });
-
-    Object.defineProperty(XMLNode.prototype, 'textContent', {
-      get: function() {
-        var child, j, len, ref2, str;
-        if (this.nodeType === NodeType$1.Element || this.nodeType === NodeType$1.DocumentFragment) {
-          str = '';
-          ref2 = this.children;
-          for (j = 0, len = ref2.length; j < len; j++) {
-            child = ref2[j];
-            if (child.textContent) {
-              str += child.textContent;
-            }
-          }
-          return str;
-        } else {
-          return null;
-        }
-      },
-      set: function(value) {
-        throw new Error("This DOM method is not implemented." + this.debugInfo());
-      }
-    });
-
-    XMLNode.prototype.setParent = function(parent) {
-      var child, j, len, ref2, results;
-      this.parent = parent;
-      if (parent) {
-        this.options = parent.options;
-        this.stringify = parent.stringify;
-      }
-      ref2 = this.children;
-      results = [];
-      for (j = 0, len = ref2.length; j < len; j++) {
-        child = ref2[j];
-        results.push(child.setParent(this));
-      }
-      return results;
-    };
-
-    XMLNode.prototype.element = function(name, attributes, text) {
-      var childNode, item, j, k, key, lastChild, len, len1, ref2, ref3, val;
-      lastChild = null;
-      if (attributes === null && (text == null)) {
-        ref2 = [{}, null], attributes = ref2[0], text = ref2[1];
-      }
-      if (attributes == null) {
-        attributes = {};
-      }
-      attributes = getValue(attributes);
-      if (!isObject(attributes)) {
-        ref3 = [attributes, text], text = ref3[0], attributes = ref3[1];
-      }
-      if (name != null) {
-        name = getValue(name);
-      }
-      if (Array.isArray(name)) {
-        for (j = 0, len = name.length; j < len; j++) {
-          item = name[j];
-          lastChild = this.element(item);
-        }
-      } else if (isFunction(name)) {
-        lastChild = this.element(name.apply());
-      } else if (isObject(name)) {
-        for (key in name) {
-          if (!hasProp.call(name, key)) continue;
-          val = name[key];
-          if (isFunction(val)) {
-            val = val.apply();
-          }
-          if (!this.options.ignoreDecorators && this.stringify.convertAttKey && key.indexOf(this.stringify.convertAttKey) === 0) {
-            lastChild = this.attribute(key.substr(this.stringify.convertAttKey.length), val);
-          } else if (!this.options.separateArrayItems && Array.isArray(val) && isEmpty(val)) {
-            lastChild = this.dummy();
-          } else if (isObject(val) && isEmpty(val)) {
-            lastChild = this.element(key);
-          } else if (!this.options.keepNullNodes && (val == null)) {
-            lastChild = this.dummy();
-          } else if (!this.options.separateArrayItems && Array.isArray(val)) {
-            for (k = 0, len1 = val.length; k < len1; k++) {
-              item = val[k];
-              childNode = {};
-              childNode[key] = item;
-              lastChild = this.element(childNode);
-            }
-          } else if (isObject(val)) {
-            if (!this.options.ignoreDecorators && this.stringify.convertTextKey && key.indexOf(this.stringify.convertTextKey) === 0) {
-              lastChild = this.element(val);
-            } else {
-              lastChild = this.element(key);
-              lastChild.element(val);
-            }
-          } else {
-            lastChild = this.element(key, val);
-          }
-        }
-      } else if (!this.options.keepNullNodes && text === null) {
-        lastChild = this.dummy();
-      } else {
-        if (!this.options.ignoreDecorators && this.stringify.convertTextKey && name.indexOf(this.stringify.convertTextKey) === 0) {
-          lastChild = this.text(text);
-        } else if (!this.options.ignoreDecorators && this.stringify.convertCDataKey && name.indexOf(this.stringify.convertCDataKey) === 0) {
-          lastChild = this.cdata(text);
-        } else if (!this.options.ignoreDecorators && this.stringify.convertCommentKey && name.indexOf(this.stringify.convertCommentKey) === 0) {
-          lastChild = this.comment(text);
-        } else if (!this.options.ignoreDecorators && this.stringify.convertRawKey && name.indexOf(this.stringify.convertRawKey) === 0) {
-          lastChild = this.raw(text);
-        } else if (!this.options.ignoreDecorators && this.stringify.convertPIKey && name.indexOf(this.stringify.convertPIKey) === 0) {
-          lastChild = this.instruction(name.substr(this.stringify.convertPIKey.length), text);
-        } else {
-          lastChild = this.node(name, attributes, text);
-        }
-      }
-      if (lastChild == null) {
-        throw new Error("Could not create any elements with: " + name + ". " + this.debugInfo());
-      }
-      return lastChild;
-    };
-
-    XMLNode.prototype.insertBefore = function(name, attributes, text) {
-      var child, i, newChild, refChild, removed;
-      if (name != null ? name.type : void 0) {
-        newChild = name;
-        refChild = attributes;
-        newChild.setParent(this);
-        if (refChild) {
-          i = children.indexOf(refChild);
-          removed = children.splice(i);
-          children.push(newChild);
-          Array.prototype.push.apply(children, removed);
-        } else {
-          children.push(newChild);
-        }
-        return newChild;
-      } else {
-        if (this.isRoot) {
-          throw new Error("Cannot insert elements at root level. " + this.debugInfo(name));
-        }
-        i = this.parent.children.indexOf(this);
-        removed = this.parent.children.splice(i);
-        child = this.parent.element(name, attributes, text);
-        Array.prototype.push.apply(this.parent.children, removed);
-        return child;
-      }
-    };
-
-    XMLNode.prototype.insertAfter = function(name, attributes, text) {
-      var child, i, removed;
-      if (this.isRoot) {
-        throw new Error("Cannot insert elements at root level. " + this.debugInfo(name));
-      }
-      i = this.parent.children.indexOf(this);
-      removed = this.parent.children.splice(i + 1);
-      child = this.parent.element(name, attributes, text);
-      Array.prototype.push.apply(this.parent.children, removed);
-      return child;
-    };
-
-    XMLNode.prototype.remove = function() {
-      var i, ref2;
-      if (this.isRoot) {
-        throw new Error("Cannot remove the root element. " + this.debugInfo());
-      }
-      i = this.parent.children.indexOf(this);
-      [].splice.apply(this.parent.children, [i, i - i + 1].concat(ref2 = [])), ref2;
-      return this.parent;
-    };
-
-    XMLNode.prototype.node = function(name, attributes, text) {
-      var child, ref2;
-      if (name != null) {
-        name = getValue(name);
-      }
-      attributes || (attributes = {});
-      attributes = getValue(attributes);
-      if (!isObject(attributes)) {
-        ref2 = [attributes, text], text = ref2[0], attributes = ref2[1];
-      }
-      child = new XMLElement$1(this, name, attributes);
-      if (text != null) {
-        child.text(text);
-      }
-      this.children.push(child);
-      return child;
-    };
-
-    XMLNode.prototype.text = function(value) {
-      var child;
-      if (isObject(value)) {
-        this.element(value);
-      }
-      child = new XMLText$1(this, value);
-      this.children.push(child);
-      return this;
-    };
-
-    XMLNode.prototype.cdata = function(value) {
-      var child;
-      child = new XMLCData$1(this, value);
-      this.children.push(child);
-      return this;
-    };
-
-    XMLNode.prototype.comment = function(value) {
-      var child;
-      child = new XMLComment$1(this, value);
-      this.children.push(child);
-      return this;
-    };
-
-    XMLNode.prototype.commentBefore = function(value) {
-      var child, i, removed;
-      i = this.parent.children.indexOf(this);
-      removed = this.parent.children.splice(i);
-      child = this.parent.comment(value);
-      Array.prototype.push.apply(this.parent.children, removed);
-      return this;
-    };
-
-    XMLNode.prototype.commentAfter = function(value) {
-      var child, i, removed;
-      i = this.parent.children.indexOf(this);
-      removed = this.parent.children.splice(i + 1);
-      child = this.parent.comment(value);
-      Array.prototype.push.apply(this.parent.children, removed);
-      return this;
-    };
-
-    XMLNode.prototype.raw = function(value) {
-      var child;
-      child = new XMLRaw$1(this, value);
-      this.children.push(child);
-      return this;
-    };
-
-    XMLNode.prototype.dummy = function() {
-      var child;
-      child = new XMLDummy$1(this);
-      return child;
-    };
-
-    XMLNode.prototype.instruction = function(target, value) {
-      var insTarget, insValue, instruction, j, len;
-      if (target != null) {
-        target = getValue(target);
-      }
-      if (value != null) {
-        value = getValue(value);
-      }
-      if (Array.isArray(target)) {
-        for (j = 0, len = target.length; j < len; j++) {
-          insTarget = target[j];
-          this.instruction(insTarget);
-        }
-      } else if (isObject(target)) {
-        for (insTarget in target) {
-          if (!hasProp.call(target, insTarget)) continue;
-          insValue = target[insTarget];
-          this.instruction(insTarget, insValue);
-        }
-      } else {
-        if (isFunction(value)) {
-          value = value.apply();
-        }
-        instruction = new XMLProcessingInstruction$1(this, target, value);
-        this.children.push(instruction);
-      }
-      return this;
-    };
-
-    XMLNode.prototype.instructionBefore = function(target, value) {
-      var child, i, removed;
-      i = this.parent.children.indexOf(this);
-      removed = this.parent.children.splice(i);
-      child = this.parent.instruction(target, value);
-      Array.prototype.push.apply(this.parent.children, removed);
-      return this;
-    };
-
-    XMLNode.prototype.instructionAfter = function(target, value) {
-      var child, i, removed;
-      i = this.parent.children.indexOf(this);
-      removed = this.parent.children.splice(i + 1);
-      child = this.parent.instruction(target, value);
-      Array.prototype.push.apply(this.parent.children, removed);
-      return this;
-    };
-
-    XMLNode.prototype.declaration = function(version, encoding, standalone) {
-      var doc, xmldec;
-      doc = this.document();
-      xmldec = new XMLDeclaration$1(doc, version, encoding, standalone);
-      if (doc.children.length === 0) {
-        doc.children.unshift(xmldec);
-      } else if (doc.children[0].type === NodeType$1.Declaration) {
-        doc.children[0] = xmldec;
-      } else {
-        doc.children.unshift(xmldec);
-      }
-      return doc.root() || doc;
-    };
-
-    XMLNode.prototype.dtd = function(pubID, sysID) {
-      var child, doc, doctype, i, j, k, len, len1, ref2, ref3;
-      doc = this.document();
-      doctype = new XMLDocType$1(doc, pubID, sysID);
-      ref2 = doc.children;
-      for (i = j = 0, len = ref2.length; j < len; i = ++j) {
-        child = ref2[i];
-        if (child.type === NodeType$1.DocType) {
-          doc.children[i] = doctype;
-          return doctype;
-        }
-      }
-      ref3 = doc.children;
-      for (i = k = 0, len1 = ref3.length; k < len1; i = ++k) {
-        child = ref3[i];
-        if (child.isRoot) {
-          doc.children.splice(i, 0, doctype);
-          return doctype;
-        }
-      }
-      doc.children.push(doctype);
-      return doctype;
-    };
-
-    XMLNode.prototype.up = function() {
-      if (this.isRoot) {
-        throw new Error("The root node has no parent. Use doc() if you need to get the document object.");
-      }
-      return this.parent;
-    };
-
-    XMLNode.prototype.root = function() {
-      var node;
-      node = this;
-      while (node) {
-        if (node.type === NodeType$1.Document) {
-          return node.rootObject;
-        } else if (node.isRoot) {
-          return node;
-        } else {
-          node = node.parent;
-        }
-      }
-    };
-
-    XMLNode.prototype.document = function() {
-      var node;
-      node = this;
-      while (node) {
-        if (node.type === NodeType$1.Document) {
-          return node;
-        } else {
-          node = node.parent;
-        }
-      }
-    };
-
-    XMLNode.prototype.end = function(options) {
-      return this.document().end(options);
-    };
-
-    XMLNode.prototype.prev = function() {
-      var i;
-      i = this.parent.children.indexOf(this);
-      if (i < 1) {
-        throw new Error("Already at the first node. " + this.debugInfo());
-      }
-      return this.parent.children[i - 1];
-    };
-
-    XMLNode.prototype.next = function() {
-      var i;
-      i = this.parent.children.indexOf(this);
-      if (i === -1 || i === this.parent.children.length - 1) {
-        throw new Error("Already at the last node. " + this.debugInfo());
-      }
-      return this.parent.children[i + 1];
-    };
-
-    XMLNode.prototype.importDocument = function(doc) {
-      var clonedRoot;
-      clonedRoot = doc.root().clone();
-      clonedRoot.parent = this;
-      clonedRoot.isRoot = false;
-      this.children.push(clonedRoot);
-      return this;
-    };
-
-    XMLNode.prototype.debugInfo = function(name) {
-      var ref2, ref3;
-      name = name || this.name;
-      if ((name == null) && !((ref2 = this.parent) != null ? ref2.name : void 0)) {
-        return "";
-      } else if (name == null) {
-        return "parent: <" + this.parent.name + ">";
-      } else if (!((ref3 = this.parent) != null ? ref3.name : void 0)) {
-        return "node: <" + name + ">";
-      } else {
-        return "node: <" + name + ">, parent: <" + this.parent.name + ">";
-      }
-    };
-
-    XMLNode.prototype.ele = function(name, attributes, text) {
-      return this.element(name, attributes, text);
-    };
-
-    XMLNode.prototype.nod = function(name, attributes, text) {
-      return this.node(name, attributes, text);
-    };
-
-    XMLNode.prototype.txt = function(value) {
-      return this.text(value);
-    };
-
-    XMLNode.prototype.dat = function(value) {
-      return this.cdata(value);
-    };
-
-    XMLNode.prototype.com = function(value) {
-      return this.comment(value);
-    };
-
-    XMLNode.prototype.ins = function(target, value) {
-      return this.instruction(target, value);
-    };
-
-    XMLNode.prototype.doc = function() {
-      return this.document();
-    };
-
-    XMLNode.prototype.dec = function(version, encoding, standalone) {
-      return this.declaration(version, encoding, standalone);
-    };
-
-    XMLNode.prototype.e = function(name, attributes, text) {
-      return this.element(name, attributes, text);
-    };
-
-    XMLNode.prototype.n = function(name, attributes, text) {
-      return this.node(name, attributes, text);
-    };
-
-    XMLNode.prototype.t = function(value) {
-      return this.text(value);
-    };
-
-    XMLNode.prototype.d = function(value) {
-      return this.cdata(value);
-    };
-
-    XMLNode.prototype.c = function(value) {
-      return this.comment(value);
-    };
-
-    XMLNode.prototype.r = function(value) {
-      return this.raw(value);
-    };
-
-    XMLNode.prototype.i = function(target, value) {
-      return this.instruction(target, value);
-    };
-
-    XMLNode.prototype.u = function() {
-      return this.up();
-    };
-
-    XMLNode.prototype.importXMLBuilder = function(doc) {
-      return this.importDocument(doc);
-    };
-
-    XMLNode.prototype.replaceChild = function(newChild, oldChild) {
-      throw new Error("This DOM method is not implemented." + this.debugInfo());
-    };
-
-    XMLNode.prototype.removeChild = function(oldChild) {
-      throw new Error("This DOM method is not implemented." + this.debugInfo());
-    };
-
-    XMLNode.prototype.appendChild = function(newChild) {
-      throw new Error("This DOM method is not implemented." + this.debugInfo());
-    };
-
-    XMLNode.prototype.hasChildNodes = function() {
-      return this.children.length !== 0;
-    };
-
-    XMLNode.prototype.cloneNode = function(deep) {
-      throw new Error("This DOM method is not implemented." + this.debugInfo());
-    };
-
-    XMLNode.prototype.normalize = function() {
-      throw new Error("This DOM method is not implemented." + this.debugInfo());
-    };
-
-    XMLNode.prototype.isSupported = function(feature, version) {
-      return true;
-    };
-
-    XMLNode.prototype.hasAttributes = function() {
-      return this.attribs.length !== 0;
-    };
-
-    XMLNode.prototype.compareDocumentPosition = function(other) {
-      var ref, res;
-      ref = this;
-      if (ref === other) {
-        return 0;
-      } else if (this.document() !== other.document()) {
-        res = DocumentPosition$1.Disconnected | DocumentPosition$1.ImplementationSpecific;
-        if (Math.random() < 0.5) {
-          res |= DocumentPosition$1.Preceding;
-        } else {
-          res |= DocumentPosition$1.Following;
-        }
-        return res;
-      } else if (ref.isAncestor(other)) {
-        return DocumentPosition$1.Contains | DocumentPosition$1.Preceding;
-      } else if (ref.isDescendant(other)) {
-        return DocumentPosition$1.Contains | DocumentPosition$1.Following;
-      } else if (ref.isPreceding(other)) {
-        return DocumentPosition$1.Preceding;
-      } else {
-        return DocumentPosition$1.Following;
-      }
-    };
-
-    XMLNode.prototype.isSameNode = function(other) {
-      throw new Error("This DOM method is not implemented." + this.debugInfo());
-    };
-
-    XMLNode.prototype.lookupPrefix = function(namespaceURI) {
-      throw new Error("This DOM method is not implemented." + this.debugInfo());
-    };
-
-    XMLNode.prototype.isDefaultNamespace = function(namespaceURI) {
-      throw new Error("This DOM method is not implemented." + this.debugInfo());
-    };
-
-    XMLNode.prototype.lookupNamespaceURI = function(prefix) {
-      throw new Error("This DOM method is not implemented." + this.debugInfo());
-    };
-
-    XMLNode.prototype.isEqualNode = function(node) {
-      var i, j, ref2;
-      if (node.nodeType !== this.nodeType) {
-        return false;
-      }
-      if (node.children.length !== this.children.length) {
-        return false;
-      }
-      for (i = j = 0, ref2 = this.children.length - 1; 0 <= ref2 ? j <= ref2 : j >= ref2; i = 0 <= ref2 ? ++j : --j) {
-        if (!this.children[i].isEqualNode(node.children[i])) {
-          return false;
-        }
-      }
-      return true;
-    };
-
-    XMLNode.prototype.getFeature = function(feature, version) {
-      throw new Error("This DOM method is not implemented." + this.debugInfo());
-    };
-
-    XMLNode.prototype.setUserData = function(key, data, handler) {
-      throw new Error("This DOM method is not implemented." + this.debugInfo());
-    };
-
-    XMLNode.prototype.getUserData = function(key) {
-      throw new Error("This DOM method is not implemented." + this.debugInfo());
-    };
-
-    XMLNode.prototype.contains = function(other) {
-      if (!other) {
-        return false;
-      }
-      return other === this || this.isDescendant(other);
-    };
-
-    XMLNode.prototype.isDescendant = function(node) {
-      var child, isDescendantChild, j, len, ref2;
-      ref2 = this.children;
-      for (j = 0, len = ref2.length; j < len; j++) {
-        child = ref2[j];
-        if (node === child) {
-          return true;
-        }
-        isDescendantChild = child.isDescendant(node);
-        if (isDescendantChild) {
-          return true;
-        }
-      }
-      return false;
-    };
-
-    XMLNode.prototype.isAncestor = function(node) {
-      return node.isDescendant(this);
-    };
-
-    XMLNode.prototype.isPreceding = function(node) {
-      var nodePos, thisPos;
-      nodePos = this.treePosition(node);
-      thisPos = this.treePosition(this);
-      if (nodePos === -1 || thisPos === -1) {
-        return false;
-      } else {
-        return nodePos < thisPos;
-      }
-    };
-
-    XMLNode.prototype.isFollowing = function(node) {
-      var nodePos, thisPos;
-      nodePos = this.treePosition(node);
-      thisPos = this.treePosition(this);
-      if (nodePos === -1 || thisPos === -1) {
-        return false;
-      } else {
-        return nodePos > thisPos;
-      }
-    };
-
-    XMLNode.prototype.treePosition = function(node) {
-      var found, pos;
-      pos = 0;
-      found = false;
-      this.foreachTreeNode(this.document(), function(childNode) {
-        pos++;
-        if (!found && childNode === node) {
-          return found = true;
-        }
-      });
-      if (found) {
-        return pos;
-      } else {
-        return -1;
-      }
-    };
-
-    XMLNode.prototype.foreachTreeNode = function(node, func) {
-      var child, j, len, ref2, res;
-      node || (node = this.document());
-      ref2 = node.children;
-      for (j = 0, len = ref2.length; j < len; j++) {
-        child = ref2[j];
-        if (res = func(child)) {
-          return res;
-        } else {
-          res = this.foreachTreeNode(child, func);
-          if (res) {
-            return res;
-          }
-        }
-      }
-    };
-
-    return XMLNode;
 
   })();
 
@@ -26863,6 +25926,791 @@ var DocumentPosition_3 = DocumentPosition.Following;
 var DocumentPosition_4 = DocumentPosition.Contains;
 var DocumentPosition_5 = DocumentPosition.ContainedBy;
 var DocumentPosition_6 = DocumentPosition.ImplementationSpecific;
+
+var XMLNode = createCommonjsModule(function (module) {
+// Generated by CoffeeScript 1.12.7
+(function() {
+  var DocumentPosition$1, NodeType$1, XMLCData$1, XMLComment$1, XMLDeclaration$1, XMLDocType$1, XMLDummy$1, XMLElement$1, XMLNode, XMLNodeList$1, XMLProcessingInstruction$1, XMLRaw$1, XMLText$1, getValue, isEmpty, isFunction, isObject, ref1,
+    hasProp = {}.hasOwnProperty;
+
+  ref1 = Utility, isObject = ref1.isObject, isFunction = ref1.isFunction, isEmpty = ref1.isEmpty, getValue = ref1.getValue;
+
+  XMLElement$1 = null;
+
+  XMLCData$1 = null;
+
+  XMLComment$1 = null;
+
+  XMLDeclaration$1 = null;
+
+  XMLDocType$1 = null;
+
+  XMLRaw$1 = null;
+
+  XMLText$1 = null;
+
+  XMLProcessingInstruction$1 = null;
+
+  XMLDummy$1 = null;
+
+  NodeType$1 = null;
+
+  XMLNodeList$1 = null;
+
+  DocumentPosition$1 = null;
+
+  module.exports = XMLNode = (function() {
+    function XMLNode(parent1) {
+      this.parent = parent1;
+      if (this.parent) {
+        this.options = this.parent.options;
+        this.stringify = this.parent.stringify;
+      }
+      this.value = null;
+      this.children = [];
+      this.baseURI = null;
+      if (!XMLElement$1) {
+        XMLElement$1 = XMLElement;
+        XMLCData$1 = XMLCData;
+        XMLComment$1 = XMLComment;
+        XMLDeclaration$1 = XMLDeclaration;
+        XMLDocType$1 = XMLDocType;
+        XMLRaw$1 = XMLRaw;
+        XMLText$1 = XMLText;
+        XMLProcessingInstruction$1 = XMLProcessingInstruction;
+        XMLDummy$1 = XMLDummy;
+        NodeType$1 = NodeType;
+        XMLNodeList$1 = XMLNodeList;
+        DocumentPosition$1 = DocumentPosition;
+      }
+    }
+
+    Object.defineProperty(XMLNode.prototype, 'nodeName', {
+      get: function() {
+        return this.name;
+      }
+    });
+
+    Object.defineProperty(XMLNode.prototype, 'nodeType', {
+      get: function() {
+        return this.type;
+      }
+    });
+
+    Object.defineProperty(XMLNode.prototype, 'nodeValue', {
+      get: function() {
+        return this.value;
+      }
+    });
+
+    Object.defineProperty(XMLNode.prototype, 'parentNode', {
+      get: function() {
+        return this.parent;
+      }
+    });
+
+    Object.defineProperty(XMLNode.prototype, 'childNodes', {
+      get: function() {
+        if (!this.childNodeList || !this.childNodeList.nodes) {
+          this.childNodeList = new XMLNodeList$1(this.children);
+        }
+        return this.childNodeList;
+      }
+    });
+
+    Object.defineProperty(XMLNode.prototype, 'firstChild', {
+      get: function() {
+        return this.children[0] || null;
+      }
+    });
+
+    Object.defineProperty(XMLNode.prototype, 'lastChild', {
+      get: function() {
+        return this.children[this.children.length - 1] || null;
+      }
+    });
+
+    Object.defineProperty(XMLNode.prototype, 'previousSibling', {
+      get: function() {
+        var i;
+        i = this.parent.children.indexOf(this);
+        return this.parent.children[i - 1] || null;
+      }
+    });
+
+    Object.defineProperty(XMLNode.prototype, 'nextSibling', {
+      get: function() {
+        var i;
+        i = this.parent.children.indexOf(this);
+        return this.parent.children[i + 1] || null;
+      }
+    });
+
+    Object.defineProperty(XMLNode.prototype, 'ownerDocument', {
+      get: function() {
+        return this.document() || null;
+      }
+    });
+
+    Object.defineProperty(XMLNode.prototype, 'textContent', {
+      get: function() {
+        var child, j, len, ref2, str;
+        if (this.nodeType === NodeType$1.Element || this.nodeType === NodeType$1.DocumentFragment) {
+          str = '';
+          ref2 = this.children;
+          for (j = 0, len = ref2.length; j < len; j++) {
+            child = ref2[j];
+            if (child.textContent) {
+              str += child.textContent;
+            }
+          }
+          return str;
+        } else {
+          return null;
+        }
+      },
+      set: function(value) {
+        throw new Error("This DOM method is not implemented." + this.debugInfo());
+      }
+    });
+
+    XMLNode.prototype.setParent = function(parent) {
+      var child, j, len, ref2, results;
+      this.parent = parent;
+      if (parent) {
+        this.options = parent.options;
+        this.stringify = parent.stringify;
+      }
+      ref2 = this.children;
+      results = [];
+      for (j = 0, len = ref2.length; j < len; j++) {
+        child = ref2[j];
+        results.push(child.setParent(this));
+      }
+      return results;
+    };
+
+    XMLNode.prototype.element = function(name, attributes, text) {
+      var childNode, item, j, k, key, lastChild, len, len1, ref2, ref3, val;
+      lastChild = null;
+      if (attributes === null && (text == null)) {
+        ref2 = [{}, null], attributes = ref2[0], text = ref2[1];
+      }
+      if (attributes == null) {
+        attributes = {};
+      }
+      attributes = getValue(attributes);
+      if (!isObject(attributes)) {
+        ref3 = [attributes, text], text = ref3[0], attributes = ref3[1];
+      }
+      if (name != null) {
+        name = getValue(name);
+      }
+      if (Array.isArray(name)) {
+        for (j = 0, len = name.length; j < len; j++) {
+          item = name[j];
+          lastChild = this.element(item);
+        }
+      } else if (isFunction(name)) {
+        lastChild = this.element(name.apply());
+      } else if (isObject(name)) {
+        for (key in name) {
+          if (!hasProp.call(name, key)) continue;
+          val = name[key];
+          if (isFunction(val)) {
+            val = val.apply();
+          }
+          if (!this.options.ignoreDecorators && this.stringify.convertAttKey && key.indexOf(this.stringify.convertAttKey) === 0) {
+            lastChild = this.attribute(key.substr(this.stringify.convertAttKey.length), val);
+          } else if (!this.options.separateArrayItems && Array.isArray(val) && isEmpty(val)) {
+            lastChild = this.dummy();
+          } else if (isObject(val) && isEmpty(val)) {
+            lastChild = this.element(key);
+          } else if (!this.options.keepNullNodes && (val == null)) {
+            lastChild = this.dummy();
+          } else if (!this.options.separateArrayItems && Array.isArray(val)) {
+            for (k = 0, len1 = val.length; k < len1; k++) {
+              item = val[k];
+              childNode = {};
+              childNode[key] = item;
+              lastChild = this.element(childNode);
+            }
+          } else if (isObject(val)) {
+            if (!this.options.ignoreDecorators && this.stringify.convertTextKey && key.indexOf(this.stringify.convertTextKey) === 0) {
+              lastChild = this.element(val);
+            } else {
+              lastChild = this.element(key);
+              lastChild.element(val);
+            }
+          } else {
+            lastChild = this.element(key, val);
+          }
+        }
+      } else if (!this.options.keepNullNodes && text === null) {
+        lastChild = this.dummy();
+      } else {
+        if (!this.options.ignoreDecorators && this.stringify.convertTextKey && name.indexOf(this.stringify.convertTextKey) === 0) {
+          lastChild = this.text(text);
+        } else if (!this.options.ignoreDecorators && this.stringify.convertCDataKey && name.indexOf(this.stringify.convertCDataKey) === 0) {
+          lastChild = this.cdata(text);
+        } else if (!this.options.ignoreDecorators && this.stringify.convertCommentKey && name.indexOf(this.stringify.convertCommentKey) === 0) {
+          lastChild = this.comment(text);
+        } else if (!this.options.ignoreDecorators && this.stringify.convertRawKey && name.indexOf(this.stringify.convertRawKey) === 0) {
+          lastChild = this.raw(text);
+        } else if (!this.options.ignoreDecorators && this.stringify.convertPIKey && name.indexOf(this.stringify.convertPIKey) === 0) {
+          lastChild = this.instruction(name.substr(this.stringify.convertPIKey.length), text);
+        } else {
+          lastChild = this.node(name, attributes, text);
+        }
+      }
+      if (lastChild == null) {
+        throw new Error("Could not create any elements with: " + name + ". " + this.debugInfo());
+      }
+      return lastChild;
+    };
+
+    XMLNode.prototype.insertBefore = function(name, attributes, text) {
+      var child, i, newChild, refChild, removed;
+      if (name != null ? name.type : void 0) {
+        newChild = name;
+        refChild = attributes;
+        newChild.setParent(this);
+        if (refChild) {
+          i = children.indexOf(refChild);
+          removed = children.splice(i);
+          children.push(newChild);
+          Array.prototype.push.apply(children, removed);
+        } else {
+          children.push(newChild);
+        }
+        return newChild;
+      } else {
+        if (this.isRoot) {
+          throw new Error("Cannot insert elements at root level. " + this.debugInfo(name));
+        }
+        i = this.parent.children.indexOf(this);
+        removed = this.parent.children.splice(i);
+        child = this.parent.element(name, attributes, text);
+        Array.prototype.push.apply(this.parent.children, removed);
+        return child;
+      }
+    };
+
+    XMLNode.prototype.insertAfter = function(name, attributes, text) {
+      var child, i, removed;
+      if (this.isRoot) {
+        throw new Error("Cannot insert elements at root level. " + this.debugInfo(name));
+      }
+      i = this.parent.children.indexOf(this);
+      removed = this.parent.children.splice(i + 1);
+      child = this.parent.element(name, attributes, text);
+      Array.prototype.push.apply(this.parent.children, removed);
+      return child;
+    };
+
+    XMLNode.prototype.remove = function() {
+      var i, ref2;
+      if (this.isRoot) {
+        throw new Error("Cannot remove the root element. " + this.debugInfo());
+      }
+      i = this.parent.children.indexOf(this);
+      [].splice.apply(this.parent.children, [i, i - i + 1].concat(ref2 = [])), ref2;
+      return this.parent;
+    };
+
+    XMLNode.prototype.node = function(name, attributes, text) {
+      var child, ref2;
+      if (name != null) {
+        name = getValue(name);
+      }
+      attributes || (attributes = {});
+      attributes = getValue(attributes);
+      if (!isObject(attributes)) {
+        ref2 = [attributes, text], text = ref2[0], attributes = ref2[1];
+      }
+      child = new XMLElement$1(this, name, attributes);
+      if (text != null) {
+        child.text(text);
+      }
+      this.children.push(child);
+      return child;
+    };
+
+    XMLNode.prototype.text = function(value) {
+      var child;
+      if (isObject(value)) {
+        this.element(value);
+      }
+      child = new XMLText$1(this, value);
+      this.children.push(child);
+      return this;
+    };
+
+    XMLNode.prototype.cdata = function(value) {
+      var child;
+      child = new XMLCData$1(this, value);
+      this.children.push(child);
+      return this;
+    };
+
+    XMLNode.prototype.comment = function(value) {
+      var child;
+      child = new XMLComment$1(this, value);
+      this.children.push(child);
+      return this;
+    };
+
+    XMLNode.prototype.commentBefore = function(value) {
+      var child, i, removed;
+      i = this.parent.children.indexOf(this);
+      removed = this.parent.children.splice(i);
+      child = this.parent.comment(value);
+      Array.prototype.push.apply(this.parent.children, removed);
+      return this;
+    };
+
+    XMLNode.prototype.commentAfter = function(value) {
+      var child, i, removed;
+      i = this.parent.children.indexOf(this);
+      removed = this.parent.children.splice(i + 1);
+      child = this.parent.comment(value);
+      Array.prototype.push.apply(this.parent.children, removed);
+      return this;
+    };
+
+    XMLNode.prototype.raw = function(value) {
+      var child;
+      child = new XMLRaw$1(this, value);
+      this.children.push(child);
+      return this;
+    };
+
+    XMLNode.prototype.dummy = function() {
+      var child;
+      child = new XMLDummy$1(this);
+      return child;
+    };
+
+    XMLNode.prototype.instruction = function(target, value) {
+      var insTarget, insValue, instruction, j, len;
+      if (target != null) {
+        target = getValue(target);
+      }
+      if (value != null) {
+        value = getValue(value);
+      }
+      if (Array.isArray(target)) {
+        for (j = 0, len = target.length; j < len; j++) {
+          insTarget = target[j];
+          this.instruction(insTarget);
+        }
+      } else if (isObject(target)) {
+        for (insTarget in target) {
+          if (!hasProp.call(target, insTarget)) continue;
+          insValue = target[insTarget];
+          this.instruction(insTarget, insValue);
+        }
+      } else {
+        if (isFunction(value)) {
+          value = value.apply();
+        }
+        instruction = new XMLProcessingInstruction$1(this, target, value);
+        this.children.push(instruction);
+      }
+      return this;
+    };
+
+    XMLNode.prototype.instructionBefore = function(target, value) {
+      var child, i, removed;
+      i = this.parent.children.indexOf(this);
+      removed = this.parent.children.splice(i);
+      child = this.parent.instruction(target, value);
+      Array.prototype.push.apply(this.parent.children, removed);
+      return this;
+    };
+
+    XMLNode.prototype.instructionAfter = function(target, value) {
+      var child, i, removed;
+      i = this.parent.children.indexOf(this);
+      removed = this.parent.children.splice(i + 1);
+      child = this.parent.instruction(target, value);
+      Array.prototype.push.apply(this.parent.children, removed);
+      return this;
+    };
+
+    XMLNode.prototype.declaration = function(version, encoding, standalone) {
+      var doc, xmldec;
+      doc = this.document();
+      xmldec = new XMLDeclaration$1(doc, version, encoding, standalone);
+      if (doc.children.length === 0) {
+        doc.children.unshift(xmldec);
+      } else if (doc.children[0].type === NodeType$1.Declaration) {
+        doc.children[0] = xmldec;
+      } else {
+        doc.children.unshift(xmldec);
+      }
+      return doc.root() || doc;
+    };
+
+    XMLNode.prototype.dtd = function(pubID, sysID) {
+      var child, doc, doctype, i, j, k, len, len1, ref2, ref3;
+      doc = this.document();
+      doctype = new XMLDocType$1(doc, pubID, sysID);
+      ref2 = doc.children;
+      for (i = j = 0, len = ref2.length; j < len; i = ++j) {
+        child = ref2[i];
+        if (child.type === NodeType$1.DocType) {
+          doc.children[i] = doctype;
+          return doctype;
+        }
+      }
+      ref3 = doc.children;
+      for (i = k = 0, len1 = ref3.length; k < len1; i = ++k) {
+        child = ref3[i];
+        if (child.isRoot) {
+          doc.children.splice(i, 0, doctype);
+          return doctype;
+        }
+      }
+      doc.children.push(doctype);
+      return doctype;
+    };
+
+    XMLNode.prototype.up = function() {
+      if (this.isRoot) {
+        throw new Error("The root node has no parent. Use doc() if you need to get the document object.");
+      }
+      return this.parent;
+    };
+
+    XMLNode.prototype.root = function() {
+      var node;
+      node = this;
+      while (node) {
+        if (node.type === NodeType$1.Document) {
+          return node.rootObject;
+        } else if (node.isRoot) {
+          return node;
+        } else {
+          node = node.parent;
+        }
+      }
+    };
+
+    XMLNode.prototype.document = function() {
+      var node;
+      node = this;
+      while (node) {
+        if (node.type === NodeType$1.Document) {
+          return node;
+        } else {
+          node = node.parent;
+        }
+      }
+    };
+
+    XMLNode.prototype.end = function(options) {
+      return this.document().end(options);
+    };
+
+    XMLNode.prototype.prev = function() {
+      var i;
+      i = this.parent.children.indexOf(this);
+      if (i < 1) {
+        throw new Error("Already at the first node. " + this.debugInfo());
+      }
+      return this.parent.children[i - 1];
+    };
+
+    XMLNode.prototype.next = function() {
+      var i;
+      i = this.parent.children.indexOf(this);
+      if (i === -1 || i === this.parent.children.length - 1) {
+        throw new Error("Already at the last node. " + this.debugInfo());
+      }
+      return this.parent.children[i + 1];
+    };
+
+    XMLNode.prototype.importDocument = function(doc) {
+      var clonedRoot;
+      clonedRoot = doc.root().clone();
+      clonedRoot.parent = this;
+      clonedRoot.isRoot = false;
+      this.children.push(clonedRoot);
+      return this;
+    };
+
+    XMLNode.prototype.debugInfo = function(name) {
+      var ref2, ref3;
+      name = name || this.name;
+      if ((name == null) && !((ref2 = this.parent) != null ? ref2.name : void 0)) {
+        return "";
+      } else if (name == null) {
+        return "parent: <" + this.parent.name + ">";
+      } else if (!((ref3 = this.parent) != null ? ref3.name : void 0)) {
+        return "node: <" + name + ">";
+      } else {
+        return "node: <" + name + ">, parent: <" + this.parent.name + ">";
+      }
+    };
+
+    XMLNode.prototype.ele = function(name, attributes, text) {
+      return this.element(name, attributes, text);
+    };
+
+    XMLNode.prototype.nod = function(name, attributes, text) {
+      return this.node(name, attributes, text);
+    };
+
+    XMLNode.prototype.txt = function(value) {
+      return this.text(value);
+    };
+
+    XMLNode.prototype.dat = function(value) {
+      return this.cdata(value);
+    };
+
+    XMLNode.prototype.com = function(value) {
+      return this.comment(value);
+    };
+
+    XMLNode.prototype.ins = function(target, value) {
+      return this.instruction(target, value);
+    };
+
+    XMLNode.prototype.doc = function() {
+      return this.document();
+    };
+
+    XMLNode.prototype.dec = function(version, encoding, standalone) {
+      return this.declaration(version, encoding, standalone);
+    };
+
+    XMLNode.prototype.e = function(name, attributes, text) {
+      return this.element(name, attributes, text);
+    };
+
+    XMLNode.prototype.n = function(name, attributes, text) {
+      return this.node(name, attributes, text);
+    };
+
+    XMLNode.prototype.t = function(value) {
+      return this.text(value);
+    };
+
+    XMLNode.prototype.d = function(value) {
+      return this.cdata(value);
+    };
+
+    XMLNode.prototype.c = function(value) {
+      return this.comment(value);
+    };
+
+    XMLNode.prototype.r = function(value) {
+      return this.raw(value);
+    };
+
+    XMLNode.prototype.i = function(target, value) {
+      return this.instruction(target, value);
+    };
+
+    XMLNode.prototype.u = function() {
+      return this.up();
+    };
+
+    XMLNode.prototype.importXMLBuilder = function(doc) {
+      return this.importDocument(doc);
+    };
+
+    XMLNode.prototype.replaceChild = function(newChild, oldChild) {
+      throw new Error("This DOM method is not implemented." + this.debugInfo());
+    };
+
+    XMLNode.prototype.removeChild = function(oldChild) {
+      throw new Error("This DOM method is not implemented." + this.debugInfo());
+    };
+
+    XMLNode.prototype.appendChild = function(newChild) {
+      throw new Error("This DOM method is not implemented." + this.debugInfo());
+    };
+
+    XMLNode.prototype.hasChildNodes = function() {
+      return this.children.length !== 0;
+    };
+
+    XMLNode.prototype.cloneNode = function(deep) {
+      throw new Error("This DOM method is not implemented." + this.debugInfo());
+    };
+
+    XMLNode.prototype.normalize = function() {
+      throw new Error("This DOM method is not implemented." + this.debugInfo());
+    };
+
+    XMLNode.prototype.isSupported = function(feature, version) {
+      return true;
+    };
+
+    XMLNode.prototype.hasAttributes = function() {
+      return this.attribs.length !== 0;
+    };
+
+    XMLNode.prototype.compareDocumentPosition = function(other) {
+      var ref, res;
+      ref = this;
+      if (ref === other) {
+        return 0;
+      } else if (this.document() !== other.document()) {
+        res = DocumentPosition$1.Disconnected | DocumentPosition$1.ImplementationSpecific;
+        if (Math.random() < 0.5) {
+          res |= DocumentPosition$1.Preceding;
+        } else {
+          res |= DocumentPosition$1.Following;
+        }
+        return res;
+      } else if (ref.isAncestor(other)) {
+        return DocumentPosition$1.Contains | DocumentPosition$1.Preceding;
+      } else if (ref.isDescendant(other)) {
+        return DocumentPosition$1.Contains | DocumentPosition$1.Following;
+      } else if (ref.isPreceding(other)) {
+        return DocumentPosition$1.Preceding;
+      } else {
+        return DocumentPosition$1.Following;
+      }
+    };
+
+    XMLNode.prototype.isSameNode = function(other) {
+      throw new Error("This DOM method is not implemented." + this.debugInfo());
+    };
+
+    XMLNode.prototype.lookupPrefix = function(namespaceURI) {
+      throw new Error("This DOM method is not implemented." + this.debugInfo());
+    };
+
+    XMLNode.prototype.isDefaultNamespace = function(namespaceURI) {
+      throw new Error("This DOM method is not implemented." + this.debugInfo());
+    };
+
+    XMLNode.prototype.lookupNamespaceURI = function(prefix) {
+      throw new Error("This DOM method is not implemented." + this.debugInfo());
+    };
+
+    XMLNode.prototype.isEqualNode = function(node) {
+      var i, j, ref2;
+      if (node.nodeType !== this.nodeType) {
+        return false;
+      }
+      if (node.children.length !== this.children.length) {
+        return false;
+      }
+      for (i = j = 0, ref2 = this.children.length - 1; 0 <= ref2 ? j <= ref2 : j >= ref2; i = 0 <= ref2 ? ++j : --j) {
+        if (!this.children[i].isEqualNode(node.children[i])) {
+          return false;
+        }
+      }
+      return true;
+    };
+
+    XMLNode.prototype.getFeature = function(feature, version) {
+      throw new Error("This DOM method is not implemented." + this.debugInfo());
+    };
+
+    XMLNode.prototype.setUserData = function(key, data, handler) {
+      throw new Error("This DOM method is not implemented." + this.debugInfo());
+    };
+
+    XMLNode.prototype.getUserData = function(key) {
+      throw new Error("This DOM method is not implemented." + this.debugInfo());
+    };
+
+    XMLNode.prototype.contains = function(other) {
+      if (!other) {
+        return false;
+      }
+      return other === this || this.isDescendant(other);
+    };
+
+    XMLNode.prototype.isDescendant = function(node) {
+      var child, isDescendantChild, j, len, ref2;
+      ref2 = this.children;
+      for (j = 0, len = ref2.length; j < len; j++) {
+        child = ref2[j];
+        if (node === child) {
+          return true;
+        }
+        isDescendantChild = child.isDescendant(node);
+        if (isDescendantChild) {
+          return true;
+        }
+      }
+      return false;
+    };
+
+    XMLNode.prototype.isAncestor = function(node) {
+      return node.isDescendant(this);
+    };
+
+    XMLNode.prototype.isPreceding = function(node) {
+      var nodePos, thisPos;
+      nodePos = this.treePosition(node);
+      thisPos = this.treePosition(this);
+      if (nodePos === -1 || thisPos === -1) {
+        return false;
+      } else {
+        return nodePos < thisPos;
+      }
+    };
+
+    XMLNode.prototype.isFollowing = function(node) {
+      var nodePos, thisPos;
+      nodePos = this.treePosition(node);
+      thisPos = this.treePosition(this);
+      if (nodePos === -1 || thisPos === -1) {
+        return false;
+      } else {
+        return nodePos > thisPos;
+      }
+    };
+
+    XMLNode.prototype.treePosition = function(node) {
+      var found, pos;
+      pos = 0;
+      found = false;
+      this.foreachTreeNode(this.document(), function(childNode) {
+        pos++;
+        if (!found && childNode === node) {
+          return found = true;
+        }
+      });
+      if (found) {
+        return pos;
+      } else {
+        return -1;
+      }
+    };
+
+    XMLNode.prototype.foreachTreeNode = function(node, func) {
+      var child, j, len, ref2, res;
+      node || (node = this.document());
+      ref2 = node.children;
+      for (j = 0, len = ref2.length; j < len; j++) {
+        child = ref2[j];
+        if (res = func(child)) {
+          return res;
+        } else {
+          res = this.foreachTreeNode(child, func);
+          if (res) {
+            return res;
+          }
+        }
+      }
+    };
+
+    return XMLNode;
+
+  })();
+
+}).call(commonjsGlobal);
+});
 
 var XMLStringifier = createCommonjsModule(function (module) {
 // Generated by CoffeeScript 1.12.7
@@ -30921,6 +30769,7 @@ const fragment = function(...children) {
 function tabulate(clover, options) {
 	const head = tr(
 		th("File"),
+		th("Stmts"),
 		th("Branches"),
 		th("Funcs"),
 		th("Lines"),
@@ -30954,12 +30803,28 @@ function toFolder(path) {
 		return ""
 	}
 
-	return tr(td({ colspan: 5 }, b(path)))
+	return tr(td({ colspan: 6 }, b(path)))
+}
+
+function getStatement(file) {
+	const { branches, functions, lines } = file;
+
+	return [branches, functions, lines].reduce(function(acc, curr) {
+		if (!curr) {
+			return acc
+		}
+
+		return {
+			hit: acc.hit + curr.hit,
+			found: acc.found + curr.found,
+		}
+	}, { hit: 0, found: 0 })
 }
 
 function toRow(file, indent, options) {
 	return tr(
 		td(filename(file, indent, options)),
+		td(percentage$1(getStatement(file))),
 		td(percentage$1(file.branches)),
 		td(percentage$1(file.functions)),
 		td(percentage$1(file.lines)),
@@ -30998,20 +30863,53 @@ function uncovered(file, options) {
 		.filter(line => line.hit === 0)
 		.map(line => line.line);
 
-	const all = [...branches, ...lines].sort();
+	const all = ranges([...branches, ...lines]);
+
 
 	return all
-		.map(function(line) {
+		.map(function(range) {
+			const fragment = range.start === range.end ? `L${range.start}` : `L${range.start}-L${range.end}`;
 			const relative = file.file.replace(options.prefix, "");
-			const href = `https://github.com/${options.repository}/blob/${options.commit}/${relative}#L${line}`;
-			return a({ href }, line)
+			const href = `https://github.com/${options.repository}/blob/${options.commit}/${relative}#${fragment}`;
+			const text = range.start === range.end ? range.start : `${range.start}&ndash;${range.end}`;
+
+			return a({ href }, text)
 		})
 		.join(", ")
 }
 
+function ranges(linenos) {
+	const res = [];
+
+	let last = null;
+
+	linenos.sort().forEach(function(lineno) {
+		if (last === null) {
+			last = { start: lineno, end: lineno };
+			return
+		}
+
+		if (last.end + 1 === lineno) {
+			last.end = lineno;
+			return
+		}
+
+		res.push(last);
+		last = { start: lineno, end: lineno };
+	});
+
+	if (last) {
+		res.push(last);
+	}
+
+	return res
+}
+
 function comment(clover, options) {
 	return fragment(
-		`Coverage after merging ${b(options.head)} into ${b(options.base)}`,
+		options.base
+			? `Coverage after merging ${b(options.head)} into ${b(options.base)}`
+			: `Coverage for this commit`,
 		table(tbody(tr(th(percentage(clover).toFixed(2), "%")))),
 		"\n\n",
 		details(summary("Coverage Report"), tabulate(clover, options)),
@@ -31030,7 +30928,9 @@ function diff(clover, before, options) {
 	const arrow = pdiff === 0 ? "" : pdiff < 0 ? "▾" : "▴";
 
 	return fragment(
-		`Coverage after merging ${b(options.head)} into ${b(options.base)}`,
+		options.base
+			? `Coverage after merging ${b(options.head)} into ${b(options.base)}`
+			: `Coverage for this commit`,
 		table(
 			tbody(
 				tr(
@@ -31063,22 +30963,37 @@ async function main$1() {
 
 	const options = {
 		repository: github_1.payload.repository.full_name,
-		commit: github_1.payload.pull_request.head.sha,
 		prefix: `${process.env.GITHUB_WORKSPACE}/`,
-		head: github_1.payload.pull_request.head.ref,
-		base: github_1.payload.pull_request.base.ref,
 	};
+
+	if (github_1.eventName === "pull_request") {
+		options.commit = github_1.payload.pull_request.head.sha;
+		options.head = github_1.payload.pull_request.head.ref;
+		options.base = github_1.payload.pull_request.base.ref;
+	} else if (github_1.eventName === "push") {
+		options.commit = github_1.payload.after;
+		options.head = github_1.ref;
+	}
 
 	const clover = await parse$1(raw);
 	const baseclover = baseRaw && (await parse$1(baseRaw));
 	const body = diff(clover, baseclover, options);
 
-	await new github_2(token).issues.createComment({
-		repo: github_1.repo.repo,
-		owner: github_1.repo.owner,
-		issue_number: github_1.payload.pull_request.number,
-		body: diff(clover, baseclover, options),
-	});
+	if (github_1.eventName === "pull_request") {
+		await new github_2(token).issues.createComment({
+			repo: github_1.repo.repo,
+			owner: github_1.repo.owner,
+			issue_number: github_1.payload.pull_request.number,
+			body: diff(clover, baseclover, options),
+		});
+	} else if (github_1.eventName === "push") {
+		await new github_2(token).repos.createCommitComment({
+			repo: github_1.repo.repo,
+			owner: github_1.repo.owner,
+			commit_sha: options.commit,
+			body: diff(clover, baseclover, options),
+		});
+	}
 }
 
 main$1().catch(function(err) {

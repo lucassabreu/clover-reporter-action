@@ -8,6 +8,7 @@ inputs:
   github-token:
     description: Github token
     required: true
+    default: ${{ github.token }}
   clover-file:
     description: The location of the clover.info file
     required: false

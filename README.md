@@ -15,9 +15,10 @@ Total Coverage: <b>99.39%</b>
 
 ## Inputs
 
-##### `github-token` (**Required**)
-Github token used for posting the comment. To use the key provided by the GitHub
-action runner, use `${{ secrets.GITHUB_TOKEN }}`.
+##### `github-token` (**Optional**)
+Github token used for posting the comment. Defaults to `${{ github.token }}`.
+
+For alternative `github-token` values see: [Creating Personal Access Tokens](https://docs.github.com/en/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token)
 
 ##### `clover-file` (**Optional**)
 The location of the clover file to read the coverage report from. Defaults to
@@ -39,4 +40,4 @@ with:
 ## Acknowledgements
 
 - The initial code is based on [ziishaned/jest-reporter-action](https://github.com/ziishaned/jest-reporter-action).
-- This project is a fork of [romeovs/lcov-reporter-action](https://romeovs/lcov-reporter-action), replacing `lcov` with `clover`, and otherwise tracking upstream.
+- This project is a fork of [romeovs/lcov-reporter-action](https://github.com/romeovs/lcov-reporter-action), replacing `lcov` with `clover`, and otherwise tracking upstream.

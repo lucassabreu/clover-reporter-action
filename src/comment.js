@@ -5,7 +5,9 @@ import { tabulate } from "./tabulate"
 
 export function comment(clover, options) {
 	return fragment(
-		`Coverage after merging ${b(options.head)} into ${b(options.base)}`,
+		options.base
+			? `Coverage after merging ${b(options.head)} into ${b(options.base)}`
+			: `Coverage for this commit`,
 		table(tbody(tr(th(percentage(clover).toFixed(2), "%")))),
 		"\n\n",
 		details(summary("Coverage Report"), tabulate(clover, options)),
@@ -24,7 +26,9 @@ export function diff(clover, before, options) {
 	const arrow = pdiff === 0 ? "" : pdiff < 0 ? "▾" : "▴"
 
 	return fragment(
-		`Coverage after merging ${b(options.head)} into ${b(options.base)}`,
+		options.base
+			? `Coverage after merging ${b(options.head)} into ${b(options.base)}`
+			: `Coverage for this commit`,
 		table(
 			tbody(
 				tr(
