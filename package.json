@@ -19,9 +19,9 @@
 		"format": "prettier --write src/*.js src/**/*.js"
 	},
 	"dependencies": {
-		"@actions/core": "^1.2.0",
-		"@actions/github": "^1.1.0",
-		"@technote-space/clover-json": "^0.4.31"
+		"@actions/core": "^1.4.0",
+		"@actions/github": "^5.0.0",
+		"@technote-space/clover-json": "^0.4.40"
 	},
 	"devDependencies": {
 		"@babel/core": "^7.8.6",

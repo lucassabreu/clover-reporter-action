@@ -1,6 +1,6 @@
 import { promises as fs } from "fs"
 import core from "@actions/core"
-import { GitHub, context } from "@actions/github"
+import { getOctokit } from "@actions/github"
 
 import { parse } from "./clover"
 import { diff } from "./comment"
@@ -44,15 +44,17 @@ async function main() {
 	console.log("oi3")
 	const body = diff(clover, baseclover, options)
 
+	const gitub = getOctokit(token)
+
 	if (context.eventName === "pull_request") {
-		await new GitHub(token).issues.createComment({
+		await github.issues.createComment({
 			repo: context.repo.repo,
 			owner: context.repo.owner,
 			issue_number: context.payload.pull_request.number,
 			body,
 		})
 	} else if (context.eventName === "push") {
-		await new GitHub(token).repos.createCommitComment({
+		await github.repos.createCommitComment({
 			repo: context.repo.repo,
 			owner: context.repo.owner,
 			commit_sha: options.commit,
